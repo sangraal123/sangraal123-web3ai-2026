@@ -28,9 +28,9 @@ app.post('/api/melt', async (req, res) => {
     return res.status(400).json({ error: '指示を入力してください。' });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = req.headers['x-api-key'] || process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    return res.status(403).json({ error: 'API_KEY_MISSING', message: 'Gemini APIキーが設定されていません。.envファイルに設定するか、デモモードをお試しください。' });
+    return res.status(403).json({ error: 'API_KEY_MISSING', message: 'Gemini APIキーが設定されていません。画面右上（⚙️）からキーを入力してください。' });
   }
 
   try {

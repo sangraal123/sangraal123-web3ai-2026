@@ -90,6 +90,7 @@ const PRESETS = {
 
 let appState = {
   isKeyConfigured: false,
+  customKey: localStorage.getItem('taskmelt_api_key') || '',
   currentResult: null
 };
 
@@ -115,6 +116,14 @@ const roadmapList = document.getElementById('roadmap-list');
 const gapsList = document.getElementById('gaps-list');
 const copyGapsBtn = document.getElementById('copy-gaps-btn');
 
+// Settings Modal DOM Elements
+const settingsBtn = document.getElementById('settings-btn');
+const settingsModal = document.getElementById('settings-modal');
+const closeSettingsBtn = document.getElementById('close-settings-btn');
+const apiKeyInput = document.getElementById('api-key-input');
+const clearKeyBtn = document.getElementById('clear-key-btn');
+const saveSettingsBtn = document.getElementById('save-settings-btn');
+
 // Initial Setup
 document.addEventListener('DOMContentLoaded', () => {
   checkAPIConfig();
@@ -129,7 +138,6 @@ function setupEventListeners() {
       const presetName = btn.dataset.preset;
       if (PRESETS[presetName]) {
         taskInput.value = PRESETS[presetName].text;
-        // Visual focus effect
         taskInput.focus();
       }
     });
@@ -150,10 +158,57 @@ function setupEventListeners() {
 
   // Copy Gaps to clipboard
   copyGapsBtn.addEventListener('click', handleCopyGaps);
+
+  // Settings Modal Events
+  settingsBtn.addEventListener('click', () => {
+    apiKeyInput.value = appState.customKey;
+    settingsModal.classList.remove('hidden');
+  });
+
+  closeSettingsBtn.addEventListener('click', () => {
+    settingsModal.classList.add('hidden');
+  });
+
+  // Close modal when clicking outside of the modal card
+  settingsModal.addEventListener('click', (e) => {
+    if (e.target === settingsModal) {
+      settingsModal.classList.add('hidden');
+    }
+  });
+
+  saveSettingsBtn.addEventListener('click', () => {
+    const key = apiKeyInput.value.trim();
+    if (key) {
+      localStorage.setItem('taskmelt_api_key', key);
+      appState.customKey = key;
+    } else {
+      localStorage.removeItem('taskmelt_api_key');
+      appState.customKey = '';
+    }
+    checkAPIConfig();
+    settingsModal.classList.add('hidden');
+  });
+
+  clearKeyBtn.addEventListener('click', () => {
+    localStorage.removeItem('taskmelt_api_key');
+    appState.customKey = '';
+    apiKeyInput.value = '';
+    checkAPIConfig();
+    settingsModal.classList.add('hidden');
+  });
 }
 
-// Check if Backend has API Key configured
+// Check if Backend has API Key configured or if there is a custom key
 async function checkAPIConfig() {
+  // 1. If client custom key exists, prioritize it
+  if (appState.customKey) {
+    apiBadge.className = 'api-badge connected';
+    apiBadge.querySelector('.badge-label').textContent = 'API接続中 (カスタムキー)';
+    apiWarningBanner.classList.add('hidden');
+    return;
+  }
+
+  // 2. Otherwise, check server config
   try {
     const res = await fetch('/api/config-check');
     const data = await res.json();
@@ -187,8 +242,10 @@ async function handleMelt() {
   showState('loading');
   setButtonLoading(true);
 
+  const hasKey = appState.customKey || appState.isKeyConfigured;
+
   // Check if we should use Mock fallback (Demo Mode)
-  if (!appState.isKeyConfigured) {
+  if (!hasKey) {
     // Check if input matches or contains a preset topic
     let matchedPreset = null;
     if (text.includes('web3・AI概論') || text.includes('VPC')) {
@@ -209,7 +266,7 @@ async function handleMelt() {
       return;
     } else {
       // Default fallback for custom text when API key is missing
-      alert('カスタム入力の分解にはGemini APIキーが必要です。.envに設定してサーバーを再起動するか、デモプリセット（web3・AI概論など）を選択して動作をお試しください！');
+      alert('カスタム入力の分解にはGemini APIキーが必要です。画面右上（⚙️）からキーを入力してください。（デモプリセットを選択すれば、キーがなくても動作を体験できます）');
       showState('blank');
       setButtonLoading(false);
       return;
@@ -218,9 +275,14 @@ async function handleMelt() {
 
   // Live API Request
   try {
+    const headers = { 'Content-Type': 'application/json' };
+    if (appState.customKey) {
+      headers['x-api-key'] = appState.customKey;
+    }
+
     const res = await fetch('/api/melt', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: headers,
       body: JSON.stringify({ instruction: text })
     });
 

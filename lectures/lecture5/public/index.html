@@ -22,9 +22,12 @@
         <span class="logo-icon">🧊</span>
         <h1 class="logo-text">TaskMelt</h1>
       </div>
-      <div id="api-status-badge" class="api-badge checking">
-        <span class="badge-dot"></span>
-        <span class="badge-label">APIステータス確認中</span>
+      <div class="header-controls">
+        <div id="api-status-badge" class="api-badge checking">
+          <span class="badge-dot"></span>
+          <span class="badge-label">APIステータス確認中</span>
+        </div>
+        <button id="settings-btn" class="btn-settings" title="APIキー設定">⚙️</button>
       </div>
     </header>
 
@@ -32,8 +35,8 @@
     <div id="api-warning-banner" class="warning-banner hidden">
       <span class="warning-icon">⚠️</span>
       <p class="warning-text">
-        <strong>Gemini APIキーが設定されていません。</strong> 
-        ローカルの <code>.env</code> ファイルに <code>GEMINI_API_KEY</code> を追加してください。
+        <strong>Gemini APIキーが未設定です。</strong> 
+        画面右上の設定（⚙️）ボタンからAPIキーを入力してください。
         または、下の<strong>「デモプリセット」</strong>をクリックして分解シミュレーションをお試しいただけます。
       </p>
     </div>
@@ -156,6 +159,32 @@
   <footer class="app-footer">
     <p>TaskMelt &copy; 2026 | VPC v1 実装プロトタイプ</p>
   </footer>
+
+  <!-- Settings Modal (Glassmorphism Modal Overlay) -->
+  <div id="settings-modal" class="modal-overlay hidden">
+    <div class="modal-card card">
+      <div class="modal-header">
+        <h3 class="modal-title">⚙️ Gemini APIキー設定</h3>
+        <button id="close-settings-btn" class="btn-close" title="閉じる">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">
+          Gemini API キーを入力してください。キーはブラウザのローカルストレージ（<code>localStorage</code>）へ安全に保存され、リクエストのヘッダー情報（<code>x-api-key</code>）としてのみ送信されます。
+        </p>
+        <div class="form-group">
+          <label for="api-key-input" class="form-label">API キー:</label>
+          <input type="password" id="api-key-input" class="form-input" placeholder="Gemini APIキーを入力">
+        </div>
+        <div class="form-group">
+          <p class="api-help-text">🔑 キーは <a href="https://aistudio.google.com/" target="_blank" rel="noopener">Google AI Studio</a> から無料で取得できます。</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="clear-key-btn" class="btn btn-secondary btn-sm">キーを消去</button>
+        <button id="save-settings-btn" class="btn btn-primary btn-sm">設定を保存</button>
+      </div>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>
