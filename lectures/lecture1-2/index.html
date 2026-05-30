@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sangraal - Portfolio & Self Introduction</title>
+    <meta name="description" content="Sangraalの自己紹介ページです。得意なことは反復、興味があることは探求。AIを執事・相棒のように捉え、宝石のようなアプリを作成します。">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-effect"></div>
+    <header class="header slide-in">
+        <div class="profile-container">
+            <div class="avatar-glow"></div>
+            <img src="../../assets/profile.png" alt="Sangraalのフューチャリスティックなアバター" class="profile-pic">
+        </div>
+        <h1 class="name">Sangraal</h1>
+        <p class="subtitle">Creator & Explorer</p>
+    </header>
+
+    <main class="container">
+        <section class="card fade-up">
+            <h2 class="section-title">Identity</h2>
+            <div class="traits">
+                <div class="trait">
+                    <span class="trait-label">得意なこと</span>
+                    <span class="trait-value emphasis">反復</span>
+                </div>
+                <div class="trait">
+                    <span class="trait-label">興味があること</span>
+                    <span class="trait-value emphasis">探求</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="card fade-up">
+            <h2 class="section-title">Perspective on AI</h2>
+            <div class="ai-perspective">
+                <div class="viewpoint">
+                    <h3>AIとはどういう存在か</h3>
+                    <p>私にとってAIは、まさに<strong>「執事」</strong>のような存在です。<br>膨大な知識と精緻な技術で、静かに、そして確実に応えてくれます。</p>
+                </div>
+                <div class="viewpoint">
+                    <h3>今後どのように向き合いたいか</h3>
+                    <p>これからは単なる便利なツールとしてではなく、<strong>「相棒」</strong>として向き合いたいと考えています。<br>共に思考を深め、共に新しい価値を創り上げるパートナーです。</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="card fade-up highlight-card">
+            <h2 class="section-title">Visions & Challenges</h2>
+            <p class="vision-intro">この授業を通して、私が挑戦したい目標です。</p>
+            <ul class="vision-list">
+                <li>
+                    <div class="icon" aria-hidden="true">💎</div>
+                    <div class="content">
+                        <strong>宝石のようなアプリを作りたい</strong><br>
+                        <span>見た目が美しく、機能的で、人々の心を惹きつける洗練された価値あるものを生み出します。</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="icon" aria-hidden="true">🌌</div>
+                    <div class="content">
+                        <strong>究極のようなことを調べてみたい</strong><br>
+                        <span>表面的な知識にとどまらず、深淵なる真理や技術の限界、その「究極の形」に挑みます。</span>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <section class="card fade-up">
+            <h2 class="section-title">Mini Game: Gem Explorer</h2>
+            <p>タップまたは「スペースキー」でジャンプし、障害物（ノイズ）を避けて宝石（💎）を集めましょう。</p>
+            <div id="game-container" class="game-container">
+                <div id="game-overlay" class="game-overlay">
+                    <h3 id="game-title">Press Space to Start</h3>
+                    <p id="game-score-final" class="hidden">Score: <span id="final-score-val">0</span></p>
+                </div>
+                <div id="score-display">Depth: <span id="score-val">0</span></div>
+                <div id="player" class="player"></div>
+                <!-- 障害物や宝石はJSで動的に生成します -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Sangraal. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

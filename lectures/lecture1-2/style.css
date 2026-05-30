@@ -1,0 +1,410 @@
+:root {
+    --bg-color: #0b0c10;
+    --text-primary: #e0e2e4;
+    --text-secondary: #8a8d91;
+    --accent-1: #9b5de5; /* Amethyst */
+    --accent-2: #00f5d4; /* Neon Blue/Cyan */
+    --accent-3: #f15bb5; /* Pinkish red */
+    --glass-bg: rgba(20, 22, 30, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Noto Sans JP', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Background animated glow */
+.background-effect {
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 50% 50%, rgba(155, 93, 229, 0.1), transparent 40%),
+                radial-gradient(circle at 80% 20%, rgba(0, 245, 212, 0.1), transparent 30%);
+    z-index: -1;
+    animation: drift 20s infinite alternate linear;
+}
+
+@keyframes drift {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(30deg); }
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    padding: 80px 20px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-container {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin-bottom: 24px;
+}
+
+.avatar-glow {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, var(--accent-1), var(--accent-2));
+    z-index: 0;
+    filter: blur(10px);
+    opacity: 0.7;
+    animation: pulse 3s infinite alternate;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.5; transform: scale(1); }
+    100% { opacity: 0.8; transform: scale(1.05); }
+}
+
+.profile-pic {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    position: relative;
+    z-index: 1;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+}
+
+.name {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    background: linear-gradient(to right, #fff, var(--accent-2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    font-weight: 300;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}
+
+/* Cards (Glassmorphism) */
+.card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 40px;
+    margin-bottom: 40px;
+    box-shadow: var(--glass-shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(155, 93, 229, 0.15);
+    border-color: rgba(155, 93, 229, 0.3);
+}
+
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: var(--accent-1);
+    display: flex;
+    align-items: center;
+}
+
+.section-title::after {
+    content: '';
+    display: block;
+    height: 1px;
+    flex-grow: 1;
+    background: linear-gradient(90deg, var(--accent-1) 0%, transparent 100%);
+    margin-left: 20px;
+    opacity: 0.5;
+}
+
+/* Traits */
+.traits {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.trait {
+    flex: 1;
+    min-width: 200px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+.trait-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.trait-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.emphasis {
+    background: linear-gradient(90deg, var(--accent-2), #fff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* AI Perspective */
+.ai-perspective {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.viewpoint h3 {
+    font-size: 1.2rem;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.viewpoint p {
+    color: #b5b8bc;
+    font-size: 1.05rem;
+}
+
+.viewpoint strong {
+    color: var(--accent-2);
+    font-weight: 600;
+}
+
+/* Visions & Challenges */
+.highlight-card {
+    border: 1px solid rgba(0, 245, 212, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.highlight-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--accent-1), var(--accent-2));
+}
+
+.vision-intro {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    color: var(--text-secondary);
+}
+
+.vision-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.vision-list li {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.vision-list .icon {
+    font-size: 2.2rem;
+    line-height: 1;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 12px;
+    border-radius: 12px;
+}
+
+.vision-list .content strong {
+    font-size: 1.2rem;
+    color: #fff;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.vision-list .content span {
+    color: #a8abb0;
+    font-size: 0.95rem;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 40px;
+}
+
+/* Animations */
+.slide-in {
+    opacity: 0;
+    transform: translateY(-30px);
+    animation: slideIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.fade-up {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@keyframes slideIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================================================================
+   Mini Game: Gem Explorer
+   ========================================================================= */
+.game-container {
+    position: relative;
+    width: 100%;
+    height: 250px;
+    background: rgba(10, 12, 18, 0.8);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    margin-top: 20px;
+    overflow: hidden;
+    box-shadow: inset 0 0 20px rgba(0, 245, 212, 0.05);
+}
+
+.game-overlay {
+    position: absolute;
+    inset: 0;
+    background: var(--glass-bg);
+    backdrop-filter: blur(4px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: opacity 0.3s ease;
+}
+
+.game-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#game-title {
+    font-size: 1.5rem;
+    color: var(--accent-2);
+    text-shadow: 0 0 10px rgba(0, 245, 212, 0.4);
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+#game-title.neon-pulse {
+    animation: neonPulse 1.5s infinite alternate;
+}
+
+@keyframes neonPulse {
+    from { text-shadow: 0 0 5px rgba(0,245,212,0.2); }
+    to { text-shadow: 0 0 15px rgba(0,245,212,0.8), 0 0 20px rgba(0,245,212,0.4); }
+}
+
+#score-display {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    z-index: 5;
+}
+
+.player {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: var(--accent-2);
+    border-radius: 50%;
+    left: 10%;
+    bottom: 20px;
+    box-shadow: 0 0 15px var(--accent-2);
+    z-index: 5;
+}
+
+.obstacle {
+    position: absolute;
+    width: 20px;
+    height: 40px;
+    background: var(--accent-3);
+    bottom: 20px;
+    border-radius: 4px;
+    box-shadow: 0 0 10px var(--accent-3);
+    z-index: 4;
+}
+
+.gem {
+    position: absolute;
+    font-size: 24px;
+    line-height: 1;
+    z-index: 4;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .card {
+        padding: 24px;
+    }
+    
+    .name {
+        font-size: 2.2rem;
+    }
+    
+    .trait-value {
+        font-size: 1.5rem;
+    }
+    
+    .traits {
+        flex-direction: column;
+    }
+}
