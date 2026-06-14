@@ -1465,71 +1465,76 @@ async function showGuide(subtaskText) {
   const hasKey = appState.customKey || appState.isKeyConfigured;
 
   if (!hasKey) {
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 800));
     
-    // Choose appropriate mock guide based on content keywords
     const text = subtaskText.toLowerCase();
     let mockGuide = "";
     
-    if (text.includes('不満') || text.includes('洗い出し') || text.includes('bug-list')) {
+    // lecture3 (Homework 3)
+    if (text.includes('日常の不満') || text.includes('不満や不便を洗い出し') || text.includes('不満をノートに書き出す') || text.includes('箇条書きで20個')) {
       mockGuide = `### 💡 作業ガイド: ${subtaskText}
 
-日常の中の不満や改善したいポイントを洗い出し、\`lectures/lecture3/bug-list.md\` に記載する手順です。
+日常の中の不便や「もっとこうなったらいいのに」と思う体験を20個ブレストし、ファイルに記述する手順です。
 
 #### 🛠️ 推奨されるアクション
-1. 身の回りの不便（アプリの使いにくさ、手作業の面倒さなど）をメモアプリや紙に書き留めます。
-2. 目標の20個に達するまでブレストします。
-3. \`lectures/lecture3/bug-list.md\` を作成し、選んだ1番目の困りごとに \`★\` をつけます。
+1. 自分の生活（通学、買い物、プログラミング、スマホアプリの使用など）を振り返ります。
+2. 小さなストレスや二度手間の作業をメモ書きしていきます。
+3. \`lectures/lecture3/bug-list.md\` を作成し、20個のリストをマークダウン形式で記載します。
 
 #### 💻 実行コード/コマンドの例
 \`\`\`bash
-# lecture3フォルダに移動し、bug-list.md ファイルを作成
+# フォルダの作成とファイルの新規作成
 mkdir -p lectures/lecture3
 touch lectures/lecture3/bug-list.md
 \`\`\`
 
 #### 📄 ファイル構成例 (bug-list.md)
 \`\`\`markdown
-# バグ・不満リスト 20
+# 日常のバグ・不満リスト 20
 
-- [★] 1. 朝のゴミ出しの分別ルールが複雑で、出し忘れてしまう
-- [ ] 2. 複数のポイントカードを財布から探すのに時間がかかる
+- 1. カフェでコンセントのある席が空いているか外から確認できない
+- 2. 傘を持ち歩くべきか、降水確率だけでは判断しづらい
 ...
-- [ ] 20. 自販機で小銭を入れるときに反応が遅い
+- 20. 複数のポイントカードをスマートにまとめられない
 \`\`\`
 
 > [!NOTE]
 > デモモードのため、これはサンプルガイドです。APIキーを設定すると、タスクの内容に合わせた詳細なMarkdownガイドが自動生成されます。`;
     } 
-    else if (text.includes('解決策') || text.includes('vpc') || text.includes('提供価値')) {
+    else if (text.includes('★マーク') || text.includes('解決したい不満を1つ') || text.includes('重要度を評価')) {
       mockGuide = `### 💡 作業ガイド: ${subtaskText}
 
-顧客像とプロダクトの提供価値をマッピングした VPC v1 (Value Proposition Canvas v1) を作成する手順です。
+リストアップした不満の中から、最も解決したいものを1つ選定し、★マークを付与する手順です。
 
 #### 🛠️ 推奨されるアクション
-1. 選んだ不満（★マーク）からターゲット顧客を設定します。
-2. 顧客側（Jobs: 顧客の用事、Pains: 顧客の痛み、Gains: 顧客の得たいメリット）を言語化します。
-3. 提供側（Products: 製品、Pain Relievers: 痛みの解消法、Gain Creators: メリットの創出）を対比させて設計します。
+1. 20個の不満リストを見直します。
+2. 「自分自身が強く困っていること」「多くの人が共通して困っていそうなこと」を基準に1つ選びます。
+3. リスト内の該当項目に \`★\` マークをつけます。
 
-#### 📄 vpc-v1.md の構成例
+#### 📄 bug-list.md の編集例
 \`\`\`markdown
-# Value Proposition Canvas v1
-
-## 👤 顧客プロフィール
-- **Customer Jobs**: 朝のゴミ出しを時間通りに正確に終わらせたい
-- **Pains**: 分別方法が曜日ごとに異なり、覚えるのが難しい。寝坊して出し遅れる
-- **Gains**: 間違えずに簡単に分別でき、前日夜にスマートに整理できる状態
-
-## 🧊 価値提案 (Value Proposition)
-- **Products & Services**: スマート分別リマインダーAIアプリ
-- **Pain Relievers**: カメラでゴミを映すだけで分別カテゴリをAI判定
-- **Gain Creators**: カレンダーと連携し、最適な回収前夜にプッシュ通知
-\`\`\`
-
-> [!TIP]
-> 顧客 Jobs/Pains/Gains に対応するように提供価値 Products/Relievers/Creators が噛み合っていることを検証してください。`;
+# バグリスト (bug-list.md)
+- [★] 1. カフェでコンセントのある席が空いているか外から確認できない
+- [ ] 2. 傘を持ち歩くべきか、降水確率だけでは判断しづらい
+\`\`\``;
     }
-    else if (text.includes('スクリーンショット') || text.includes('スクショ') || text.includes('vpc-v1.png')) {
+    else if (text.includes('不満に基づいてvpc') || text.includes('顧客像と価値マップ') || text.includes('テンプレート') || text.includes('解決策について')) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+選んだ不満に基づき、VPC v1 (Value Proposition Canvas v1) の6大要素を設計する手順です。
+
+#### 🛠️ 推奨されるアクション
+1. **顧客プロフィール側 (右側の円)** を設計します：
+   * **Customer Jobs**: 顧客がやり遂げたい用事や課題
+   * **Pains**: その用事を行う上で顧客が感じる不快感、障壁
+   * **Gains**: 顧客が求めている成果、嬉しい体験
+2. **価値提案側 (左側の四角)** を設計します：
+   * **Products & Services**: 解決のために提供するプロダクトや機能
+   * **Pain Relievers**: 顧客の「痛み(Pains)」をどのように和らげるか
+   * **Gain Creators**: 顧客にどのように「利得(Gains)」をもたらすか
+3. それぞれ対になるように関係性を調整してください。`;
+    }
+    else if (text.includes('スクリーンショット') || text.includes('スクショ') || text.includes('vpc-v1.png') || text.includes('撮影する')) {
       mockGuide = `### 💡 作業ガイド: ${subtaskText}
 
 作成したVPCのスクリーンショットを撮影し、\`assets/vpc-v1.png\` に保存する手順です。
@@ -1551,7 +1556,52 @@ mv ~/Desktop/Screenshot*.png ./assets/vpc-v1.png
 > [!WARNING]
 > 拡張子は小文字の \`.png\` に統一してください。マークダウンから読み出す際にリンク切れを防ぐためです。`;
     }
-    else if (text.includes('github') || text.includes('リポジトリ') || text.includes('push')) {
+    else if (text.includes('vpc-v1.md') || text.includes('文字起こし')) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+VPCの画像ファイルと文字起こしテキストを \`vpc-v1.md\` に記述する手順です。
+
+#### 🛠️ 推奨されるアクション
+1. \`lectures/lecture3/vpc-v1.md\` を作成します。
+2. 最上部にVPC画像へのリンク（マークダウン画像タグ）を挿入します。
+3. 下部に、画像内の文字を人間が読めるテキストデータとして文字起こしして反映します。
+
+#### 📄 vpc-v1.md の記述例
+\`\`\`markdown
+# Value Proposition Canvas v1
+
+![VPC v1](../../assets/vpc-v1.png)
+
+## 👤 顧客プロフィール
+- **Customer Jobs**: 〇〇
+- **Pains**: 〇〇
+- **Gains**: 〇〇
+
+## 🧊 価値提案
+- **Products & Services**: 〇〇
+- **Pain Relievers**: 〇〇
+- **Gain Creators**: 〇〇
+\`\`\``;
+    }
+    else if (text.includes('readme.md') || text.includes('プレースホルダー')) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+提出用のリポジトリに含まれる \`README.md\` の氏名やDiscord IDなどのプレースホルダーを自分自身の情報に書き換える手順です。
+
+#### 🛠️ 推奨されるアクション
+1. エディタで \`lectures/lecture3/README.md\` を開きます。
+2. \`[あなたの名前]\` などのプレースホルダー表記を探します。
+3. 自分の本名、学生番号、およびDiscord ID（ニックネームではなく正式なID）に正確に修正します。
+
+#### 📄 README.md の編集例
+\`\`\`markdown
+# 課題提出用リポジトリ
+- **氏名**: 山田 太郎
+- **Discord ID**: yamada_tarou#1234
+- **提出ステータス**: 提出済
+\`\`\``;
+    }
+    else if (text.includes('github') && (text.includes('作成') || text.includes('init') || text.includes('push'))) {
       mockGuide = `### 💡 作業ガイド: ${subtaskText}
 
 作業したファイルをすべてコミットし、GitHubに作成したPublicリポジトリへプッシュする手順です。
@@ -1592,17 +1642,31 @@ GitHubリポジトリのURLを授業のポータルアプリに提出する手�
 > [!WARNING]
 > リポジトリが **Private** になっている場合、採点者が閲覧できず未提出扱いになる可能性があります。提出前に必ずPublicアクセス可能か検証してください。`;
     }
-    else if (text.includes('研究テーマ') || text.includes('候補') || text.includes('ブレスト')) {
+    
+    // thesis (Graduation Thesis)
+    else if (text.includes('全体テーマ') || text.includes('3つブレスト') || text.includes('マインドマップ')) {
       mockGuide = `### 💡 作業ガイド: ${subtaskText}
 
-卒業論文の興味あるテーマ候補を3案ブレストし、背景や検証方法を整理する手順です。
+卒業論文の研究テーマとして興味がある候補を3つ以上ブレインストーミングする手順です。
 
 #### 🛠️ 推奨されるアクション
-1. ゼミの主要テーマから、自分が特に興味のあるキーワード（例: AIと教育、分散型アイデンティティなど）を洗い出します。
-2. 各テーマについて「何が課題か（背景）」「どうやって調べるか（検証手法）」「何が分かると予想されるか（仮説）」をドキュメントにまとめます。
-3. A4用紙1枚程度に収まるようにWordやGoogleドキュメントに下書きします。`;
+1. 所属ゼミが扱っている大テーマ（例: 機械学習の応用、ブロックチェーンなど）を確認します。
+2. 最近のニュース、日頃疑問に思っていること、ゼミの過去のテーマ一覧からヒントを得ます。
+3. 関心のある切り口を自由にノートやマインドマップに書き出し、3つの候補案を言語化します。`;
     }
-    else if (text.includes('教官') || text.includes('アポ') || text.includes('面談')) {
+    else if (text.includes('選定理由') || text.includes('想定される結論') || text.includes('検証方法')) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+選んだテーマ候補の「新規性・意義」や「どう実証するか」を簡単な文章で整理する手順です。
+
+#### 🛠️ 推奨されるアクション
+1. 各テーマについて以下の3項目を論理的に書き出します：
+   * **選定理由 (Why)**: なぜこのテーマが重要なのか。どんな社会的・学術的課題があるか。
+   * **想定される結論 (What)**: この研究で明らかになるはずの予測。
+   * **検証方法 (How)**: データを集めるのか、アンケートを行うのか、システムを作るのか。
+2. これらをWordやGoogleドキュメントに、各A4半ページ〜1ページ程度でまとめます。`;
+    }
+    else if (text.includes('アポ') || text.includes('面談の打診') || text.includes('アポイント') || text.includes('教官に「初回')) {
       mockGuide = `### 💡 作業ガイド: ${subtaskText}
 
 指導教官に初回面談のアポイントを取るメールを作成し、送信する手順です。
@@ -1628,38 +1692,109 @@ GitHubリポジトリのURLを授業のポータルアプリに提出する手�
 ご多忙中恐縮ですが、ご検討のほどよろしくお願いいたします。
 \`\`\``;
     }
-    else if (text.includes('先行研究') || text.includes('論文') || text.includes('scholar')) {
+    else if (text.includes('論文データベース') || text.includes('5本収集') || text.includes('scholar') || text.includes('図書館')) {
       mockGuide = `### 💡 作業ガイド: ${subtaskText}
 
-関連する先行研究の論文を5本収集し、スプレッドシートにまとめる手順です。
+関連する先行研究の論文を5本収集し、ダウンロードする手順です。
 
 #### 🛠️ 推奨されるアクション
-1. Google ScholarやCiNiiなどの論文データベースを開く。
-2. 研究キーワードで検索し、被引用数の多い主要な論文を5本抽出します（英語での検索も推奨）。
-3. スプレッドシートを作成し、タイトル・著者・出版年・概要の列を作り入力します。`;
+1. Google ScholarやCiNii、J-STAGEなどの論文検索エンジンを開きます。
+2. 自分の研究テーマのキーワードを入力して検索します（英語での検索も推奨）。
+3. 信頼できるジャーナルや、被引用件数の多い論文を5本以上ダウンロードします。`;
     }
-    else if (text.includes('競合') || text.includes('調査') || text.includes('価格')) {
+    else if (text.includes('要約をまとめる') || text.includes('スプレッドシート') || text.includes('スプシ')) {
       mockGuide = `### 💡 作業ガイド: ${subtaskText}
 
-競合となる既存サービス（Notion AI, ChatGPT, Zapier等）の機能や価格を調査し、比較表を作成する手順です。
+収集した先行研究を後からいつでも参照できるよう、一覧データベースを作成する手順です。
 
 #### 🛠️ 推奨されるアクション
-1. 競合ツール3社の公式PricingページとFeature紹介ページをブラウザで開きます。
-2. スプレッドシートを新規作成し、以下の項目を比較するマトリクス表を構築します。
-   * プラン名と月額料金
-   * 提供される主な機能とAIモデルの制限
-   * 主なターゲット層（個人、スタートアップ、エンタープライズ）
-   * 調査で見つかった課題やユーザの不満点`;
+1. Googleスプレッドシートを新規作成し、「先行研究リスト」と名付けます。
+2. 以下のカラムヘッダーを作成します：
+   * \`タイトル\` / \`著者\` / \`発表年\` / \`ジャーナル名\`
+   * \`要約（何が明らかになったか）\`
+   * \`卒論にどう活かせるか\`
+3. 収集した5本以上の論文情報を入力し、引用元の文献情報 (Bibliography) を整理します。`;
     }
-    else if (text.includes('usp') || text.includes('キャッチコピー')) {
+    else if (text.includes('pdf化') || text.includes('教官へメール送付')) {
       mockGuide = `### 💡 作業ガイド: ${subtaskText}
 
-プロダクトのUSP（独自の強み）の定義と、LP用のキャッチコピーアイデアを考案する手順です。
+まとめたテーマ候補資料をPDFファイルとして出力し、教官に事前に共有する手順です。
+
+#### 🛠️ 推奨されるアクション
+1. WordやGoogleドキュメント等のメニューから「PDFとしてダウンロード/エクスポート」を選択します。
+2. ファイル名を \`[氏名]_卒論テーマ候補_v1.pdf\` とします。
+3. メールソフトを起動し、PDFファイルを添付したアポイントメールを送信します。`;
+    }
+    else if (text.includes('面談を実施') || text.includes('フィードバックをメモ')) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+指導教官との初回個別面談を行い、テーマ候補への学術的なアドバイスや修正案を記録する手順です。
+
+#### 🛠️ 推奨されるアクション
+1. 面談日時に遅れないよう準備し、添付したPDF資料を印刷するかPCで表示できるようにしておきます。
+2. 先生からの指摘事項（「先行研究が足りない」「検証方法が難しすぎる」など）をその場でメモします。
+3. 面談の最後には、どのテーマを軸に進めるべきか先生の意向を確認します。`;
+    }
+    else if (text.includes('テーマ申請書') || text.includes('申請書')) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+面談結果を反映した最終申請書を作成し、大学ポータルから正式に提出する手順です。
+
+#### 🛠️ 推奨されるアクション
+1. 面談で得たアドバイスを元に、3案の中から「これで行く」という最終テーマを1つ決定します。
+2. 所定のテーマ申請書様式（様式1）をダウンロードし、必要事項を記入します。
+3. 完成した申請書をポータルにPDF形式でアップロードし、提出ボタンを押します。`;
+    }
+    
+    // marketing (Product Launch)
+    else if (text.includes('紹介ページを開いてブックマーク')) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+競合調査を円滑に行うため、比較対象となる既存サービスの情報ソースを整理する手順です。
+
+#### 🛠️ 推奨されるアクション
+1. Googleなどの検索エンジンで \`Notion AI\`, \`ChatGPT Plus\`, \`Zapier AI\` などのキーワードで検索します。
+2. それぞれの公式トップページ、価格（Pricing）ページ、および機能紹介（Features）ページを開きます。
+3. ブラウザのブックマーク機能に「競合AIツール調査」フォルダを作成し、これらのURLを保存します。`;
+    }
+    else if (text.includes('競合') && (text.includes('機能') || text.includes('価格') || text.includes('ターゲット') || text.includes('入力する'))) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+ブックマークしたページを参照し、機能やサービスの特徴をマージした比較表を構築する手順です。
+
+#### 🛠️ 推奨されるアクション
+1. 新しいGoogleスプレッドシートを作成します。
+2. 以下のような列を配置します：
+   * \`製品名\` / \`開発元\`
+   * \`初期費用 / 月額料金\`
+   * \`主要な機能・自動化範囲\`
+   * \`対象ユーザ（フリーランス、開発者、企業等）\`
+   * \`強み (Pros) / 弱み (Cons)\`
+3. 各製品のデータを埋め、自社製品が差別化できる「余白」を分析します。`;
+    }
+    else if (text.includes('usp') || text.includes('3点に絞る')) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+プロダクトのUSP（独自の強み）の定義と、強み特徴を整理する手順です。
 
 #### 🛠️ 推奨されるアクション
 1. 競合分析表をレビューし、他社が満たせていない「顧客の痛み」を探します。
 2. 自分たちの製品が提供する「他社にない独自の価値（USP）」を3つ定義します。
-3. 訪問者が3秒で価値を理解できるLP用メインキャッチコピーと、補足するサブコピーを複数パターン作成します。`;
+3. なぜその特徴が顧客を惹きつけるのか、一言で説明できるようにまとめます。`;
+    }
+    else if (text.includes('キャッチコピー') || text.includes('アイデア')) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+LP訪問者の心を瞬時に掴むための、訴求力のあるテキスト案を作成する手順です。
+
+#### 🛠️ 推奨されるアクション
+1. USP（強み）に基づき、ターゲットが惹かれるフレーズをブレストします。
+2. 「成果（時間を節約など）」と「手段（タスク自動化AIなど）」を盛り込んだメインコピーを考案します。
+3. コピー案を5パターン作成し、チームや知人に簡単なフィードバックをもらって洗練させます。
+
+#### 📄 コピー構成例
+*   **パターン1**: 「手作業のタスクは、AIに任せよう。毎日2時間を生み出すタスク自動化アシスタント。」
+*   **パターン2**: 「ワンクリックでタスクを解凍。迷いゼロで実行に移せるAIタスクプランナー。」`;
     }
     else if (text.includes('figma') || text.includes('ワイヤーフレーム')) {
       mockGuide = `### 💡 作業ガイド: ${subtaskText}
@@ -1675,8 +1810,50 @@ Figmaを使用してランディングページ（LP）の構成ワイヤーフ�
    * 解決する課題（3つのステップなど）
    * USPの提示と価格設定`;
     }
+    else if (text.includes('シミュレーション') || text.includes('配信単価') || text.includes('広告チャネル')) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+広告プラットフォームでのインプレッション単価やクリック単価 (CPC) を事前に調査し、現実的な集客コストを見積もる手順です。
+
+#### 🛠️ 推奨されるアクション
+1. \`Google キーワードプランナー\` を開き、自社ツール関連のキーワード（例: 「タスク自動化ツール」「AI タスク管理」）の検索ボリュームと入札単価（CPC）を調べます。
+2. \`X (Twitter) Ads Manager\` にログインし、仮のキャンペーンを作成してターゲット（例: 「フリーランス」）の推定配信単価をシミュレーションします。
+3. 各チャネルでの獲得単価（CPA）を予測し、調査結果をまとめます。`;
+    }
+    else if (text.includes('予算') || text.includes('20万円')) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+限られた月額予算20万円をどの広告チャネルにどう配分し、どの程度のコンバージョン (CV) を狙うかを設計する手順です。
+
+#### 🛠️ 推奨されるアクション
+1. 調査した配信単価（CPC）を元に予算配分を決めます。
+   * 例：Google広告: 10万円 (想定CPC 150円 -> 約660クリック)
+   * 例：X広告: 10万円 (想定CPC 100円 -> 約1000クリック)
+2. LPのコンバージョン率 (CVR) を1%と想定し、獲得できる登録ユーザー数（目標成果数）を算出します。
+   * 総クリック: 1660回 -> 目標CV数: 16〜17名`;
+    }
+    else if (text.includes('スライド') || text.includes('ピッチ') || text.includes('プレゼン')) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+ここまでの全マーケティング施策・ローンチ計画を10スライド以内のピッチデッキにまとめる手順です。
+
+#### 🛠️ 推奨されるアクション
+1. Googleスライドを起動し、以下のページ構成でスライドを作成します：
+   * Slide 1: タイトル（プロジェクト名・ローンチ計画）
+   * Slide 2: ターゲットの課題・背景
+   * Slide 3: 競合比較の要約
+   * Slide 4: 提供価値とUSP (独自の強み)
+   * Slide 5: LP構成・キャッチコピー案
+   * Slide 6: LPワイヤーフレーム (Figmaリンク)
+   * Slide 7: 広告配信計画・予算配分 (20万円)
+   * Slide 8: 期待される成果 (KPI・コンバージョン)
+   * Slide 9: 今後のスケジュール
+   * Slide 10: まとめ
+2. レビュー会議に備え、スライドを共有リンクとして出力します。`;
+    }
+    
+    // Default fallback
     else {
-      // Fallback
       mockGuide = `### 💡 作業ガイド: ${subtaskText}
 
 以下は、このステップを完了するための具体的な実行手順です。
