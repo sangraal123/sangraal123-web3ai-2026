@@ -1466,25 +1466,229 @@ async function showGuide(subtaskText) {
 
   if (!hasKey) {
     await new Promise(resolve => setTimeout(resolve, 1000));
-    const mockGuide = `### 💡 作業ガイド: ${subtaskText}
+    
+    // Choose appropriate mock guide based on content keywords
+    const text = subtaskText.toLowerCase();
+    let mockGuide = "";
+    
+    if (text.includes('不満') || text.includes('洗い出し') || text.includes('bug-list')) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
 
-以下は、このステップを完了するための具体的な実行手順です。
+日常の中の不満や改善したいポイントを洗い出し、\`lectures/lecture3/bug-list.md\` に記載する手順です。
 
 #### 🛠️ 推奨されるアクション
-1. 必要なファイルを準備します。
-2. 関連するコマンドを実行して、環境や設定を確認します。
+1. 身の回りの不便（アプリの使いにくさ、手作業の面倒さなど）をメモアプリや紙に書き留めます。
+2. 目標の20個に達するまでブレストします。
+3. \`lectures/lecture3/bug-list.md\` を作成し、選んだ1番目の困りごとに \`★\` をつけます。
 
 #### 💻 実行コード/コマンドの例
 \`\`\`bash
-# 必要なディレクトリがあるか確認
-ls -la
+# lecture3フォルダに移動し、bug-list.md ファイルを作成
+mkdir -p lectures/lecture3
+touch lectures/lecture3/bug-list.md
+\`\`\`
 
-# テスト実行
-npm test
+#### 📄 ファイル構成例 (bug-list.md)
+\`\`\`markdown
+# バグ・不満リスト 20
+
+- [★] 1. 朝のゴミ出しの分別ルールが複雑で、出し忘れてしまう
+- [ ] 2. 複数のポイントカードを財布から探すのに時間がかかる
+...
+- [ ] 20. 自販機で小銭を入れるときに反応が遅い
 \`\`\`
 
 > [!NOTE]
 > デモモードのため、これはサンプルガイドです。APIキーを設定すると、タスクの内容に合わせた詳細なMarkdownガイドが自動生成されます。`;
+    } 
+    else if (text.includes('解決策') || text.includes('vpc') || text.includes('提供価値')) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+顧客像とプロダクトの提供価値をマッピングした VPC v1 (Value Proposition Canvas v1) を作成する手順です。
+
+#### 🛠️ 推奨されるアクション
+1. 選んだ不満（★マーク）からターゲット顧客を設定します。
+2. 顧客側（Jobs: 顧客の用事、Pains: 顧客の痛み、Gains: 顧客の得たいメリット）を言語化します。
+3. 提供側（Products: 製品、Pain Relievers: 痛みの解消法、Gain Creators: メリットの創出）を対比させて設計します。
+
+#### 📄 vpc-v1.md の構成例
+\`\`\`markdown
+# Value Proposition Canvas v1
+
+## 👤 顧客プロフィール
+- **Customer Jobs**: 朝のゴミ出しを時間通りに正確に終わらせたい
+- **Pains**: 分別方法が曜日ごとに異なり、覚えるのが難しい。寝坊して出し遅れる
+- **Gains**: 間違えずに簡単に分別でき、前日夜にスマートに整理できる状態
+
+## 🧊 価値提案 (Value Proposition)
+- **Products & Services**: スマート分別リマインダーAIアプリ
+- **Pain Relievers**: カメラでゴミを映すだけで分別カテゴリをAI判定
+- **Gain Creators**: カレンダーと連携し、最適な回収前夜にプッシュ通知
+\`\`\`
+
+> [!TIP]
+> 顧客 Jobs/Pains/Gains に対応するように提供価値 Products/Relievers/Creators が噛み合っていることを検証してください。`;
+    }
+    else if (text.includes('スクリーンショット') || text.includes('スクショ') || text.includes('vpc-v1.png')) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+作成したVPCのスクリーンショットを撮影し、\`assets/vpc-v1.png\` に保存する手順です。
+
+#### 🛠️ 推奨されるアクション
+1. スライドや描画ツールで作成したVPC画面を適度な大きさに調整します。
+2. スクリーンショット撮影ショートカットを使って、キャンバス部分のみを範囲選択して撮影します。
+3. \`assets\` ディレクトリがなければ作成し、撮影した画像を保存・移動します。
+
+#### 💻 実行コード/コマンドの例
+\`\`\`bash
+# assets ディレクトリの作成
+mkdir -p assets
+
+# Macでの範囲スクリーンショットの保存先から移動する例
+mv ~/Desktop/Screenshot*.png ./assets/vpc-v1.png
+\`\`\`
+
+> [!WARNING]
+> 拡張子は小文字の \`.png\` に統一してください。マークダウンから読み出す際にリンク切れを防ぐためです。`;
+    }
+    else if (text.includes('github') || text.includes('リポジトリ') || text.includes('push')) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+作業したファイルをすべてコミットし、GitHubに作成したPublicリポジトリへプッシュする手順です。
+
+#### 🛠️ 推奨されるアクション
+1. GitHubのマイページから「New Repository」を開き、リポジトリを作成します。
+2. リポジトリ名は \`[DiscordID]-web3ai-2026\` とします。必ず **Public** を選択してください。
+3. ローカルで初期化、ステージング、コミットを行い、リモートを追加してプッシュします。
+
+#### 💻 実行コード/コマンドの例
+\`\`\`bash
+# git初期化とリモート登録 (初回のみ)
+git init
+git remote add origin https://github.com/あなたのユーザー名/リポジトリ名.git
+
+# すべてのファイルをステージングしてコミット
+git add .
+git commit -m "feat: complete lecture3 homework"
+
+# mainブランチへプッシュ
+git branch -M main
+git push -u origin main
+\`\`\`
+
+> [!IMPORTANT]
+> \`git commit\` を実行する前に \`git status\` を使って不要なファイル（\`node_modules\` など）が含まれていないことを確認してください。`;
+    }
+    else if (text.includes('ポータル') || text.includes('提出')) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+GitHubリポジトリのURLを授業のポータルアプリに提出する手順です。
+
+#### 🛠️ 推奨されるアクション
+1. プッシュ後のGitHubのURLが \`https://github.com/ユーザー名/リポジトリ名\` になっていることを確認します。
+2. シークレットウィンドウなどでURLを開き、サインインしていなくてもPublicリポジトリとして閲覧できるかテストします。
+3. ポータルアプリの提出フォームを開き、URLを入力して「送信」を押します。
+
+> [!WARNING]
+> リポジトリが **Private** になっている場合、採点者が閲覧できず未提出扱いになる可能性があります。提出前に必ずPublicアクセス可能か検証してください。`;
+    }
+    else if (text.includes('研究テーマ') || text.includes('候補') || text.includes('ブレスト')) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+卒業論文の興味あるテーマ候補を3案ブレストし、背景や検証方法を整理する手順です。
+
+#### 🛠️ 推奨されるアクション
+1. ゼミの主要テーマから、自分が特に興味のあるキーワード（例: AIと教育、分散型アイデンティティなど）を洗い出します。
+2. 各テーマについて「何が課題か（背景）」「どうやって調べるか（検証手法）」「何が分かると予想されるか（仮説）」をドキュメントにまとめます。
+3. A4用紙1枚程度に収まるようにWordやGoogleドキュメントに下書きします。`;
+    }
+    else if (text.includes('教官') || text.includes('アポ') || text.includes('面談')) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+指導教官に初回面談のアポイントを取るメールを作成し、送信する手順です。
+
+#### 🛠️ 推奨されるアクション
+1. 来週火曜日のゼミまでの間で、自分の空いている時間帯を3パターン以上抽出します。
+2. メールの件名を分かりやすく「【卒論面談のお願い】ゼミ生 [氏名]」とします。
+3. 作成した3案のテーマ資料（PDF等）を添付してメールを送信します。
+
+#### 📄 メール文面案
+\`\`\`text
+〇〇先生
+
+お疲れ様です。ゼミ生の[あなたの名前]です。
+卒業論文の研究テーマ選定にあたり、個別の初回面談をお願いしたくご連絡いたしました。
+
+以下の日時のうち、先生のご都合の良い時間帯はございますでしょうか。
+1. 〇月〇日（月）13:00 - 15:00
+2. 〇月〇日（火）10:00 - 12:00
+3. 〇月〇日（水）15:00 - 17:00
+
+事前に作成いたしましたテーマ候補（3案）の資料を添付いたします。
+ご多忙中恐縮ですが、ご検討のほどよろしくお願いいたします。
+\`\`\``;
+    }
+    else if (text.includes('先行研究') || text.includes('論文') || text.includes('scholar')) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+関連する先行研究の論文を5本収集し、スプレッドシートにまとめる手順です。
+
+#### 🛠️ 推奨されるアクション
+1. Google ScholarやCiNiiなどの論文データベースを開く。
+2. 研究キーワードで検索し、被引用数の多い主要な論文を5本抽出します（英語での検索も推奨）。
+3. スプレッドシートを作成し、タイトル・著者・出版年・概要の列を作り入力します。`;
+    }
+    else if (text.includes('競合') || text.includes('調査') || text.includes('価格')) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+競合となる既存サービス（Notion AI, ChatGPT, Zapier等）の機能や価格を調査し、比較表を作成する手順です。
+
+#### 🛠️ 推奨されるアクション
+1. 競合ツール3社の公式PricingページとFeature紹介ページをブラウザで開きます。
+2. スプレッドシートを新規作成し、以下の項目を比較するマトリクス表を構築します。
+   * プラン名と月額料金
+   * 提供される主な機能とAIモデルの制限
+   * 主なターゲット層（個人、スタートアップ、エンタープライズ）
+   * 調査で見つかった課題やユーザの不満点`;
+    }
+    else if (text.includes('usp') || text.includes('キャッチコピー')) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+プロダクトのUSP（独自の強み）の定義と、LP用のキャッチコピーアイデアを考案する手順です。
+
+#### 🛠️ 推奨されるアクション
+1. 競合分析表をレビューし、他社が満たせていない「顧客の痛み」を探します。
+2. 自分たちの製品が提供する「他社にない独自の価値（USP）」を3つ定義します。
+3. 訪問者が3秒で価値を理解できるLP用メインキャッチコピーと、補足するサブコピーを複数パターン作成します。`;
+    }
+    else if (text.includes('figma') || text.includes('ワイヤーフレーム')) {
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+Figmaを使用してランディングページ（LP）の構成ワイヤーフレームを作成する手順です。
+
+#### 🛠️ 推奨されるアクション
+1. Figmaにサインインし、新規デザインファイルを作成します。
+2. PC（1440px幅）とモバイル（375px幅）のフレームを配置します。
+3. 上から順にセクションを構成フレームで配置していきます。
+   * ヘッダー（ロゴ、主要リンク、アクションボタン）
+   * ヒーローセクション（キャッチコピー、イメージ画像、主要CTA）
+   * 解決する課題（3つのステップなど）
+   * USPの提示と価格設定`;
+    }
+    else {
+      // Fallback
+      mockGuide = `### 💡 作業ガイド: ${subtaskText}
+
+以下は、このステップを完了するための具体的な実行手順です。
+
+#### 🛠️ 推奨されるアクション
+1. タスクの具体的な要件やゴールを再確認します。
+2. 作業を開始するために必要なフォルダ、ファイル、またはドキュメントを配置します。
+3. 必要に応じてエディタやターミナルを立ち上げ、作業を開始します。
+
+> [!NOTE]
+> デモモードのため、これはサンプルガイドです。APIキーを設定すると、タスクの内容に合わせた詳細なMarkdownガイドが自動生成されます。`;
+    }
 
     renderGuideMarkdown(mockGuide);
     guideLoading.classList.add('hidden');
