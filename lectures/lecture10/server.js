@@ -342,6 +342,77 @@ ${gap}
 });
 
 
+// API Endpoint to debug an error and generate injected roadmap tasks
+app.post('/api/debug-error', async (req, res) => {
+  const { parentTask, errorLog } = req.body;
+
+  if (!errorLog || typeof errorLog !== 'string' || errorLog.trim() === '') {
+    return res.status(400).json({ error: 'エラーログを入力してください。' });
+  }
+
+  const apiKey = req.headers['x-api-key'] || process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    return res.status(403).json({ error: 'API_KEY_MISSING', message: 'Gemini APIキーが設定されていません。' });
+  }
+
+  try {
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const modelName = 'gemini-2.5-flash';
+    const model = genAI.getGenerativeModel({ model: modelName });
+
+    const prompt = `ユーザーは現在、以下の親タスクに取り組んでいます：
+【全体の目標・指示】:
+${parentTask || '記載なし'}
+
+その最中に、以下のエラーが発生しました：
+【エラー内容】:
+${errorLog}
+
+このエラーを解決するために必要な「原因の簡潔な分析（日本語）」と、「今すぐ実行可能な、極限まで小さく具体的な2〜4個の解決アクションステップ」を生成してください。
+各ステップには予想所要時間（例：'3分', '5分'）を記載してください。`;
+
+    const responseSchema = {
+      type: "object",
+      properties: {
+        errorAnalysis: {
+          type: "string",
+          description: "何が原因でこのエラーが発生したのか、1〜2文での簡潔な分析。"
+        },
+        solutionSteps: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              text: { type: "string", description: "エラーを解決するための、小さく具体的なアクションステップ。" },
+              timeEstimate: { type: "string", description: "予想所要時間（例：'2分', '5分'）。" }
+            },
+            required: ["text", "timeEstimate"]
+          },
+          description: "エラー解決のための具体的な作業ステップ（2〜4個）。"
+        }
+      },
+      required: ["errorAnalysis", "solutionSteps"]
+    };
+
+    const result = await model.generateContent({
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      generationConfig: {
+        responseMimeType: "application/json",
+        responseSchema: responseSchema,
+      }
+    });
+
+    const responseText = result.response.text();
+    const data = JSON.parse(responseText);
+
+    res.json(data);
+  } catch (error) {
+    console.error('Gemini API Debug Error:', error);
+    res.status(500).json({ error: 'SERVER_ERROR', message: 'エラー解決手順の生成中にエラーが発生しました。', details: error.message });
+  }
+});
+
+
 // Start server
 app.listen(PORT, () => {
   console.log(`==================================================`);

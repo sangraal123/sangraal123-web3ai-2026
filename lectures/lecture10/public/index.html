@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskMelt 🧊 抽象的な指示を「最初の一歩」に溶かすタスク分解AI</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Background glow elements -->
+  <div class="glow-bg-1"></div>
+  <div class="glow-bg-2"></div>
+
+  <!-- Sidebar for Project History -->
+  <aside id="history-sidebar" class="history-sidebar collapsed">
+    <div class="sidebar-header">
+      <h3 class="sidebar-title">📂 プロジェクト履歴</h3>
+      <button id="close-sidebar-btn" class="btn-close" title="閉じる">&times;</button>
+    </div>
+    <div class="sidebar-body">
+      <button id="new-melt-btn" class="btn btn-secondary btn-sm new-melt-btn">+ 新しいタスク</button>
+      <ul id="history-list" class="history-list">
+        <!-- Will be dynamically populated with local history -->
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Side Panel for AI Guide -->
+  <aside id="guide-sidebar" class="guide-sidebar collapsed">
+    <div class="sidebar-header">
+      <h3 class="sidebar-title">💡 実行手順ガイド</h3>
+      <button id="close-guide-btn" class="btn-close" title="閉じる">&times;</button>
+    </div>
+    <div id="guide-sidebar-body" class="sidebar-body guide-body">
+      <div id="guide-loading" class="guide-loading hidden">
+        <div class="subtask-loader"></div>
+        <p style="margin-top: 1rem; font-size: 0.95rem; color: var(--text-muted);">AIが具体的な手順やコマンドを解説中...</p>
+      </div>
+      <div id="guide-content" class="guide-content">
+        <!-- Will be dynamically populated with Markdown HTML -->
+      </div>
+    </div>
+  </aside>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-area">
+        <span class="logo-icon">🧊</span>
+        <h1 class="logo-text">TaskMelt</h1>
+      </div>
+      <div class="header-controls">
+        <div id="api-status-badge" class="api-badge checking">
+          <span class="badge-dot"></span>
+          <span class="badge-label">APIステータス確認中</span>
+        </div>
+        <button id="history-toggle-btn" class="btn-settings" title="プロジェクト履歴">📂</button>
+        <button id="settings-btn" class="btn-settings" title="APIキー設定">⚙️</button>
+      </div>
+    </header>
+
+    <!-- Info banner for missing API key -->
+    <div id="api-warning-banner" class="warning-banner hidden">
+      <span class="warning-icon">⚠️</span>
+      <p class="warning-text">
+        <strong>Gemini APIキーが未設定です。</strong> 
+        画面右上の設定（⚙️）ボタンからAPIキーを入力してください。
+        または、下の<strong>「デモプリセット」</strong>をクリックして分解シミュレーションをお試しいただけます。
+      </p>
+    </div>
+
+    <!-- Main Content Grid -->
+    <main class="main-grid">
+      <!-- Left side: Input Area -->
+      <section class="card input-section">
+        <h2 class="section-title"><span class="title-number">01</span> 抽象的な指示を入力</h2>
+        <p class="section-desc">長い課題説明や、何から始めればいいか分からない曖昧な指示をそのまま貼り付けてください。</p>
+        
+        <!-- Preset selectors -->
+        <div class="presets-container">
+          <span class="presets-label">💡 デモプリセット:</span>
+          <div class="preset-buttons">
+            <button class="preset-btn" data-preset="lecture3">🏫 web3・AI概論課題3</button>
+            <button class="preset-btn" data-preset="thesis">🎓 卒業論文のテーマ決定</button>
+            <button class="preset-btn" data-preset="marketing">📈 新機能の競合分析</button>
+          </div>
+        </div>
+
+        <div class="textarea-wrapper">
+          <textarea id="task-input" placeholder="例：web3・AI概論 第3回宿題。バグリストを20個書いて、そのうち1つを選んでVPC v1を作成する。VPCスクショをassetsに保存し、GitHubのPublicリポジトリを作成してpushする。READMEのチェックリストを埋めて提出すること。"></textarea>
+          <div class="textarea-glow"></div>
+        </div>
+
+        <!-- v5 Context Reader: File and Image Uploads -->
+        <div class="context-reader-container">
+          <label class="form-label" style="margin-bottom: 0.5rem; display: block; font-size: 0.9rem; font-weight: 500; color: var(--text-muted);">
+            📁 進捗ファイルの読み込み (Context Reader)
+          </label>
+          <div id="drop-zone" class="drop-zone">
+            <span class="drop-icon">📤</span>
+            <span class="drop-text">進捗ファイルや画像をドラッグ＆ドロップ、またはクリックで追加</span>
+            <input type="file" id="file-input" multiple accept="image/*,.txt,.js,.py,.html,.css,.json,.md" style="display: none;">
+          </div>
+          <div id="attached-files-list" class="attached-files-list"></div>
+        </div>
+
+        <button id="melt-button" class="btn btn-primary">
+          <span class="btn-text">🧊 タスクを解凍する (Melt)</span>
+          <span class="btn-loader hidden"></span>
+        </button>
+      </section>
+
+      <!-- Right side: Output Results Area -->
+      <section class="output-section">
+        <!-- Initial Blank State -->
+        <div id="blank-state" class="blank-state">
+          <div class="blank-illustration">🧊</div>
+          <h3>タスクはまだ凍っています</h3>
+          <p>左側に指示を入力して「解凍」ボタンを押すと、AIが行動可能なステップに分解します。</p>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading-state" class="loading-state hidden">
+          <div class="melting-loader">
+            <div class="crystal"></div>
+            <div class="water-drops">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+          <h3>タスクを解凍中...</h3>
+          <p>AIが指示を分析し、最初の一歩とロードマップを作成しています。</p>
+        </div>
+
+        <!-- Decomposed Result Area -->
+        <div id="result-area" class="result-area hidden">
+          <div class="result-header">
+            <h2 class="section-title"><span class="title-number">02</span> 解凍されたアクションプラン</h2>
+            <button id="export-md-btn" class="btn btn-secondary btn-sm export-md-btn" title="Markdownとしてコピー">📋 Markdownコピー</button>
+          </div>
+
+          <!-- The Golden First Step Card -->
+          <div class="first-step-card">
+            <div class="first-step-header">
+              <span class="glow-label">⚡️ THE GOLDEN FIRST STEP (最初の一歩)</span>
+            </div>
+            <div class="first-step-body">
+              <label class="checkbox-container">
+                <input type="checkbox" id="first-step-checkbox">
+                <span class="checkmark"></span>
+                <span id="first-step-text" class="task-text">Googleドキュメントを作成して「web3・AI概論_第3回」と名付ける</span>
+              </label>
+            </div>
+            <div class="first-step-footer">
+              <p class="first-step-tip">💡 フリーズを防ぐため、まずはこの2分で終わるタスクだけを完了させてください！</p>
+            </div>
+            <!-- Completion celebration trigger -->
+            <div id="confetti-canvas-container"></div>
+          </div>
+
+          <!-- Goal & Deliverables Grid -->
+          <div class="metadata-grid">
+            <!-- Goal Card -->
+            <div class="card meta-card">
+              <h3 class="meta-title">🎯 目的 (Goal)</h3>
+              <p id="goal-text" class="meta-desc">授業の要件を完全に満たした上でGitHubに課題リポジトリを公開し、ポータルから正常に提出すること。</p>
+            </div>
+            
+            <!-- Deliverables Card -->
+            <div class="card meta-card">
+              <h3 class="meta-title">📦 成果物 (Deliverables)</h3>
+              <ul id="deliverables-list" class="deliverable-list">
+                <!-- Will be dynamically populated -->
+              </ul>
+            </div>
+          </div>
+
+          <!-- Action Plan / Roadmap -->
+          <div class="card roadmap-card">
+            <div class="roadmap-header">
+              <h3 class="meta-title">📋 作業手順ロードマップ (Action Plan)</h3>
+              <div class="progress-container">
+                <span id="progress-text" class="progress-text">進捗率: 0%</span>
+                <div class="progress-bar-wrapper">
+                  <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+            <ol id="roadmap-list" class="roadmap-list">
+              <!-- Will be dynamically populated -->
+            </ol>
+            <!-- Add Task UI -->
+            <div class="add-task-container">
+              <input type="text" id="new-task-input" placeholder="新しい作業手順を追加..." class="form-input new-task-input">
+              <button id="add-task-btn" class="btn btn-primary btn-sm add-task-btn">追加</button>
+            </div>
+          </div>
+
+          <!-- Error Debugger UI (v6) -->
+          <div class="card error-debugger-card">
+            <h3 class="meta-title">⚠️ エラー解決・割り込み相談</h3>
+            <p class="gaps-desc">作業中にエラーが発生した場合は、エラーログを貼り付けて解決手順を Action Plan に追加できます。</p>
+            <div class="error-input-container">
+              <textarea id="error-input" class="form-input error-textarea" placeholder="例：npm ERR! code ELIFECYCLE や git push でエラーなど、発生したエラーログや症状を貼り付けてください..."></textarea>
+              <button id="debug-error-btn" class="btn btn-danger">
+                <span class="btn-text">⚡️ 解決手順を割り込ませる</span>
+                <span class="btn-loader hidden"></span>
+              </button>
+            </div>
+            <div id="error-analysis-result" class="error-analysis-result hidden">
+              <h4 class="error-analysis-title">🔍 原因の分析:</h4>
+              <p id="error-analysis-text" class="error-analysis-text"></p>
+            </div>
+          </div>
+
+          <!-- Clarity Gaps / Questions Card -->
+          <div class="card gaps-card">
+            <div class="gaps-header">
+              <h3 class="meta-title">❓ 質問すべき不明点 (Clarity Gaps)</h3>
+              <button id="copy-gaps-btn" class="btn btn-secondary btn-sm">質問をコピー</button>
+            </div>
+            <p class="gaps-desc">何から手をつけるべきか迷う前に、以下の点を確認または質問してクリアにしましょう。</p>
+            <ul id="gaps-list" class="gaps-list">
+              <!-- Will be dynamically populated -->
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="app-footer">
+    <p>TaskMelt &copy; 2026 | VPC v1 実装プロトタイプ</p>
+  </footer>
+
+  <!-- Settings Modal (Glassmorphism Modal Overlay) -->
+  <div id="settings-modal" class="modal-overlay hidden">
+    <div class="modal-card card">
+      <div class="modal-header">
+        <h3 class="modal-title">⚙️ Gemini APIキー設定</h3>
+        <button id="close-settings-btn" class="btn-close" title="閉じる">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">
+          Gemini API キーを入力してください。キーはブラウザのローカルストレージ（<code>localStorage</code>）へ安全に保存され、リクエストのヘッダー情報（<code>x-api-key</code>）としてのみ送信されます。
+        </p>
+        <div class="form-group">
+          <label for="api-key-input" class="form-label">API キー:</label>
+          <input type="password" id="api-key-input" class="form-input" placeholder="Gemini APIキーを入力">
+        </div>
+        <div class="form-group">
+          <p class="api-help-text">🔑 キーは <a href="https://aistudio.google.com/" target="_blank" rel="noopener">Google AI Studio</a> から無料で取得できます。</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="clear-key-btn" class="btn btn-secondary btn-sm">キーを消去</button>
+        <button id="save-settings-btn" class="btn btn-primary btn-sm">設定を保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Draft Question Modal -->
+  <div id="draft-modal" class="modal-overlay hidden">
+    <div class="modal-card card">
+      <div class="modal-header">
+        <h3 class="modal-title">✉️ 質問メッセージ案</h3>
+        <button id="close-draft-btn" class="btn-close" title="閉じる">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">コピーして Slack や Discord にそのまま貼り付けて送信できます。</p>
+        <textarea id="draft-textarea" readonly class="form-input draft-textarea" style="height: 180px;"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button id="copy-draft-btn" class="btn btn-primary btn-sm">📋 コピーする</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
